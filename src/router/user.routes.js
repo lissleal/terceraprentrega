@@ -1,6 +1,8 @@
 import express from "express";
 import passport from "passport";
 import { registerUser, loginUser, logoutUser, handleGitHubCallback } from "../controllers/users.controller.js";
+import UserDTO from "../dao/DTOs/user.dto.js";
+
 
 const UserRouter = express.Router()
 
@@ -64,14 +66,18 @@ UserRouter.get("/current", async (req, res) => {
         const userData = {
             name: user.name,
             surname: user.surname,
-            age: user.age,
             email: user.email,
+            age: user.age,
+            password: user.password,
+            cart: user.cart,
             role: user.role
         }
 
+        const userSafe = new UserDTO(userData).toSafeObject()
+
         res.render("current", {
             title: "Perfil de Usuario",
-            user: userData
+            user: userSafe
         })
     }
     catch (error) {

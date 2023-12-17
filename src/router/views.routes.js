@@ -1,4 +1,6 @@
 import express from "express";
+import authorizeRole from "../config/auth.config.js";
+
 
 const ViewsRouter = express.Router()
 
@@ -19,6 +21,12 @@ ViewsRouter.get("/register", (req, res) => {
 ViewsRouter.get("/login", (req, res) => {
     res.render("login", {
         title: "Login de Usuario"
+    })
+})
+
+ViewsRouter.get("/addProducts", authorizeRole("admin"), (req, res) => {
+    res.render("addProducts", {
+        title: "Agregar Productos"
     })
 })
 

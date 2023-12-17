@@ -113,7 +113,7 @@ class UserService {
         try {
             const email = await this.userRepository.findEmail(param);
             if (!email) {
-                return "Email no encontrado";
+                return null;
             }
 
             return email

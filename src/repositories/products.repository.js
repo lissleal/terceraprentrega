@@ -1,4 +1,5 @@
 import productModel from "../dao/mongo/product.model.js";
+import mongoose from "mongoose";
 
 class ProductRepository extends productModel {
     constructor() {
@@ -40,6 +41,9 @@ class ProductRepository extends productModel {
 
     getProductById = async (productId) => {
         try {
+            if (!mongoose.Types.ObjectId.isValid(productId)) {
+                return null; // Devuelve null si el ID no es válido
+            }
             const product = await productModel.findById(productId);
             if (!product) {
                 return null;

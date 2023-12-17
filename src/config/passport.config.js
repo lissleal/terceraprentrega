@@ -4,9 +4,9 @@ import local from "passport-local";
 import { createHash, isValidPassword } from "../utils.js";
 import UserService from "../services/UserService.js";
 
-
 const LocalStrategy = local.Strategy;
 const userService = new UserService();
+
 const initializePassport = () => {
     passport.use("register", new LocalStrategy({ passReqToCallback: true, usernameField: "email" }, async (req, username, password, done) => {
         console.log("Registering user:", req.body);

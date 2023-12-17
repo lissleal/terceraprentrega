@@ -27,6 +27,7 @@ class ProductService {
 
     getProductById = async (productId) => {
         try {
+
             const product = await this.productRepository.getProductById(productId);
             if (!product) {
                 return null;

@@ -6,7 +6,9 @@
   <p>Categoria: {{product.category}} </p>
   <p>Stock: {{product.stock}} </p>
   <img src={{product.thumbnail}} alt="" />
-  <button>Añadir a Carrito</button>
+  {{#if user}}
+    <button data-product-id="{{this._id}}">Añadir a Carrito</button>
+  {{/if}}
 </div>
 
 <link rel="stylesheet" type="text/css" href="/css/style.css" />

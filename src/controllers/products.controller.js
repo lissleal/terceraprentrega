@@ -33,7 +33,12 @@ export async function getProducts(req, res) {
 export async function getProductById(req, res) {
     try {
         const prodId = req.params.pid;
+
         const prod = await productService.getProductById(prodId);
+
+        if (!prod) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
         const productDetail = prod.toObject();
         res.render("prod", {
             title: "Detalle de Producto",
