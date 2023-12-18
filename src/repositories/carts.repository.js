@@ -1,5 +1,8 @@
 import cartModel from "../dao/mongo/cart.model.js"
 import productModel from "../dao/mongo/product.model.js"
+import ticketModel from "../dao/mongo/ticket.model.js"
+//Para generar el código único
+import { v4 as uuidv4 } from 'uuid';
 
 
 class CartRepository extends cartModel {
@@ -176,6 +179,54 @@ class CartRepository extends cartModel {
         if (!limit) return cartsOld
         if (cartsOld.length === 0) return "Error no se encontraron carritos que cumplan con el criterio"
         if (cartsOld && limit) return cartsOld.slice(0, limit)
+    }
+
+    purchaseCart = async (idCart) => {
+        try {
+            const cart = await cartModel.findById(idCart);
+            console.log("El carrito es:", cart)
+
+            //Corroborar que haya stock suficiente
+            const products = cart.products;
+            console.log("Los productos son:", products)
+            const productsNotAvailable = [];
+            const productsAvailable = [];
+            const amount = 0;
+            products.forEach(async (product) => {
+                const productToBuy = await productModel.findById(product.productId);
+                console.log("El producto a comprar es:", productToBuy)
+                if (!productToBuy || productToBuy.stock < product.quantity) {
+                    productsNotAvailable.push(productToBuy);
+                    console.log("Not enough stock for product: ", productToBuy);
+                } else {
+                    productsAvailable.push(productToBuy.productId);
+                    productToBuy.stock = productToBuy.stock - product.quantity;
+                    amount = amount + productToBuy.price * product.quantity;
+                    await productToBuy.save();
+                }
+            });
+
+
+            if (!cart) {
+                return "Cart not found";
+            }
+            const ticket = new ticketModel({
+                code: uuidv4(),
+                amount: amount,
+                purchaser: cart.name,
+                products: productsAvailable,
+            })
+            await ticket.save();
+            console.log("El ticket es:", ticket)
+            //actualizar carrito dejando los que no pudieron comprarse
+            cart.products = productsNotAvailable;
+
+            console.log("El carrito cambiado es:", cart);
+            return { ticket: ticket, cart: cart };
+        } catch (error) {
+            console.error('Error:', error);
+            return null;
+        }
     }
 
 

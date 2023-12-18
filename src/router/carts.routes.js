@@ -1,5 +1,5 @@
 import express from "express";
-import { addProductInCart, createCart, deleteCart, deleteProductInCart, getCart, getCarts, getProductsInCart, updateCart, updateQuantityOfProduct } from "../controllers/carts.controller.js";
+import { addProductInCart, createCart, deleteCart, deleteProductInCart, getCart, getCarts, getProductsInCart, updateCart, updateQuantityOfProduct, purchaseCart } from "../controllers/carts.controller.js";
 
 const CartRouter = express.Router()
 
@@ -20,6 +20,8 @@ CartRouter.post("/:cid/products/:pid", addProductInCart)
 CartRouter.put("/:cid/products/:pid", updateQuantityOfProduct)
 //Elimina del carrito el producto seleccionado
 CartRouter.delete("/:cid/products/:pid", deleteProductInCart)
+//Finaliza la compra
+CartRouter.post("/:cid/purchase", purchaseCart)
 
 
 export default CartRouter

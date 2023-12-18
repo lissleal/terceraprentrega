@@ -117,3 +117,16 @@ export async function deleteProductInCart(req, res) {
     }
 
 }
+
+//Finaliza la compra
+
+export async function purchaseCart(req, res) {
+    let cartId = req.params.cid;
+    try {
+        const result = await cartService.purchaseCart(cartId);
+        res.send({ result: "success", payload: result })
+    } catch (error) {
+        console.error('Error al realizar la compra:', error);
+        res.status(500).json({ error: 'Error al realizar la compra' });
+    }
+}

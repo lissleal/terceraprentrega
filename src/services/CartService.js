@@ -107,6 +107,18 @@ class CartService {
         }
     }
 
+    //Funciones para finalizar la compra
+    purchaseCart = async (idCart) => {
+        try {
+            const purchase = await this.cartRepository.purchaseCart(idCart);
+            if (!purchase) {
+                return null;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            return null;
+        }
+    }
 
 
 }
