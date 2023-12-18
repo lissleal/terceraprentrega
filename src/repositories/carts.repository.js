@@ -184,32 +184,32 @@ class CartRepository extends cartModel {
     purchaseCart = async (idCart) => {
         try {
             const cart = await cartModel.findById(idCart);
-            console.log("El carrito es:", cart)
 
             //Corroborar que haya stock suficiente
             const products = cart.products;
-            console.log("Los productos son:", products)
             const productsNotAvailable = [];
             const productsAvailable = [];
-            const amount = 0;
-            products.forEach(async (product) => {
+            let amount = 0;
+
+            for (const product of products) {
                 const productToBuy = await productModel.findById(product.productId);
-                console.log("El producto a comprar es:", productToBuy)
+
                 if (!productToBuy || productToBuy.stock < product.quantity) {
                     productsNotAvailable.push(productToBuy);
                     console.log("Not enough stock for product: ", productToBuy);
                 } else {
-                    productsAvailable.push(productToBuy.productId);
+                    productsAvailable.push(productToBuy.name);
                     productToBuy.stock = productToBuy.stock - product.quantity;
                     amount = amount + productToBuy.price * product.quantity;
                     await productToBuy.save();
                 }
-            });
-
+            };
 
             if (!cart) {
                 return "Cart not found";
             }
+
+            //Crear ticket
             const ticket = new ticketModel({
                 code: uuidv4(),
                 amount: amount,
@@ -217,11 +217,9 @@ class CartRepository extends cartModel {
                 products: productsAvailable,
             })
             await ticket.save();
-            console.log("El ticket es:", ticket)
             //actualizar carrito dejando los que no pudieron comprarse
             cart.products = productsNotAvailable;
 
-            console.log("El carrito cambiado es:", cart);
             return { ticket: ticket, cart: cart };
         } catch (error) {
             console.error('Error:', error);

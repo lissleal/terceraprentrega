@@ -52,6 +52,7 @@ export async function getProductById(req, res) {
 export async function createProduct(req, res) {
     try {
         let { name, description, price, category, stock, thumbnail } = req.body;
+        console.log("El body es:", req.body)
 
         if (!name || !description || !price || !category || !stock || !thumbnail) {
             return res.send({ status: "error", error: "Incomplete values" })
